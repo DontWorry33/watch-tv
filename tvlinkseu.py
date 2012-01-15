@@ -23,6 +23,7 @@ def showEpisodes(showA, showCodesA):
             remDup.append(se[0]+' '+se[1])
     #print remDup
     #remDup.sort()
+    print remDup
     temp =0
     for eps in remDup:
         #print eps
