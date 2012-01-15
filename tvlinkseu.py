@@ -214,5 +214,6 @@ def again(showA,showCodesA):
         again(showA,showCodesA)
     else:
         raw_input()
+        sys.exit(1)
 
 main()
