@@ -9,61 +9,32 @@ import sys
 
 
 def showEpisodes(showA, showCodesA):
-    remDup = []
-    test=[]
-    lakD={}
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     resp = opener.open('http://www.tv-links.eu/tv-shows/{0}_{1}/'.format(showA,showCodesA[showA]))
-    seDirty = re.findall(r'(season\_\d+)\W(\w+)\/',resp.read())
+    seDirty = re.findall(r'(season\_)(\d+)\W(\w+)\/',resp.read())
     for se in seDirty:
-        if se[0]+' '+se[1] in remDup:
-            pass
-        else:
-            remDup.append(se[0]+' '+se[1])
-    #print remDup
-    #remDup.sort()
-    temp =0
-    for eps in remDup:
-        #print eps
-        a = re.search(r'(\d+)$',eps).group(0)
-        if a == 0:
-            print "gayed"
-        test.append(int(a))
-        lakD[eps[0:8]]=int(a)
-    #print test
-    return lakD
+        lastSeason = se[1]
+        break
+    return int(lastSeason)
         
 def findSeasons(showA,showCodesA):
-    maxPerSeason = showEpisodes(showA,showCodesA)
-    #print sorted(maxPerSeason, reverse=True)
-    #print len(maxPerSeason)
-    #print maxPerSeason['season_'+str(len(maxPerSeason))]
+    seasonCount = showEpisodes(showA,showCodesA)
     badchar = '&#039;'
+    badchar2 = '&amp;'
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     resp = opener.open('http://www.tv-links.eu/tv-shows/{0}_{1}/'.format(showA,showCodesA[showA]))
     restDirty = re.findall(r'c1\"\>(\w+\s)(\d+)\<\/\w+\>\s\<\w+\s\w+\=\"\w+\"\>([\w+\s\-*\.*\:*\,*\&*\#*\0*\3*\;*]+)',resp.read())
-    count = 0
-    rig = 1
-    seasonNum = len(maxPerSeason)
     for restC in restDirty:
-        if rig==1:
-            print "Season", str(seasonNum) +'\n'
-            rig = -1
-        if count == maxPerSeason['season_'+str(seasonNum)]:
-            if seasonNum == 1:
-                pass
-            else:
-                seasonNum-=1
-            print "\nSeason", str(seasonNum) +'\n'
-            count = 0
-        print restC[0]+' '+restC[1],restC[2].replace(badchar,"'")
-        #print "count is: ",count
-        #print "seasonNum is: ",seasonNum
-        #print "Count is: ",count
-        count+=1
-        
+        if restC[1] == '0':
+            continue
+        if restC[1] == '1':
+            print "\nSeason",seasonCount,'\n'
+            seasonCount-=1
+            
+        print restC[0]+' '+restC[1],restC[2].replace(badchar,"'").replace(badchar2,"&")
+
 def showDate(showA,showCodesA,season,episode):
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -81,7 +52,7 @@ def showSummary(showA,showCodesA,season,episode):
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     resp = opener.open('http://www.tv-links.eu/tv-shows/{0}_{1}/season_{2}/episode_{3}/'.format(showA,showCodesA[showA],season,episode))   
     badchar = '&#039;'
-    sumShow = "None. Report to Legacy."
+    sumShow = "None"
     summary = re.findall(r'(font2\W\W\s)([\w+\s\:*\;*\-*\.*\,*\&*\#*0*3*9*;*]+)',resp.read())
     for x in summary:
         if badchar in x[1]:
@@ -214,6 +185,7 @@ def again(showA,showCodesA):
         again(showA,showCodesA)
     else:
         raw_input()
-        sys.exit(1)
 
-main()
+if __name__ == "__main__":
+    print "Enjoy watching tv shows free!"
+    main()
