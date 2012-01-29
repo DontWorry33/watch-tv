@@ -48,7 +48,7 @@ class WatchTV:
 					except:
 						self.addShow()
 		
-		self.seasonEpisode()
+		self.chooseEpisode()
 						
 	def addShow(self):
 		self.show = self.show.replace('-',"+")
@@ -77,7 +77,7 @@ class WatchTV:
 				self.loadShows()
 		self.chooseShow()
 				
-	def seasonEpisode(self):
+	def chooseEpisode(self):
 		print '\n\n'
 		if len(self.episodeStore) < 1:	
 			self.findEpisodes()
@@ -131,7 +131,7 @@ class WatchTV:
 		print "Show has been opened in your web browser. Enjoy!"
 		anotherEp = raw_input("Watch another episode?: ").lower()
 		if anotherEp == 'y':
-			self.seasonEpisode()
+			self.chooseEpisode()
 		else:
 			raw_input()
 		
